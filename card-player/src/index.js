@@ -85,35 +85,28 @@ class DeckForm extends React.Component{
       "Access-Control-Allow-Headers": "Origin, X-Requested-With, Content-Type, Accept, Authorization"
       }
     });
+    let cards = [];
     fetch(this.state.value)
-    // // fetch("https://reqres.in/api/users?page=2")
     .then(res => res.json())
     .then(
       (result) => {
         this.setState({
           isLoaded: true,
-          items: result.items
+          items: result.cards,
+          name: result.name
         });
-        // console.log('result');
-        // console.log(result.cards);
-        let html = $.parseHTML(result.cards);
-        $(html).find('.card').each(function(i){
-          console.log(i);
-          console.log(this);
-        });
+        
       },
       (error) => {
         this.setState({
           isLoaded: true,
           error
         });
-        console.log('error')
       }
     );
-    alert(
-      'Data was submitted: ' +
-      this.state.value
-    );
+
+    console.log(this.state);
+    console.log(this.state.name);
     event.preventDefault();
   }
 
