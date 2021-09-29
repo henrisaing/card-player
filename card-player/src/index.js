@@ -1,6 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
+import './card.css';
+import $ from 'jquery';
 // import App from './App';
 // import reportWebVitals from './reportWebVitals';
 
@@ -75,8 +77,16 @@ class DeckForm extends React.Component{
   }
 
   handleSubmit(event){
+    $.ajaxSetup({
+      headers:{
+        "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Credentials": "true",
+      "Access-Control-Allow-Methods": "GET,HEAD,OPTIONS,POST,PUT",
+      "Access-Control-Allow-Headers": "Origin, X-Requested-With, Content-Type, Accept, Authorization"
+      }
+    });
     fetch(this.state.value)
-    // fetch("https://reqres.in/api/users?page=2")
+    // // fetch("https://reqres.in/api/users?page=2")
     .then(res => res.json())
     .then(
       (result) => {
@@ -84,8 +94,13 @@ class DeckForm extends React.Component{
           isLoaded: true,
           items: result.items
         });
-        console.log('result');
-        console.log(result);
+        // console.log('result');
+        // console.log(result.cards);
+        let html = $.parseHTML(result.cards);
+        $(html).find('.card').each(function(i){
+          console.log(i);
+          console.log(this);
+        });
       },
       (error) => {
         this.setState({
@@ -94,7 +109,7 @@ class DeckForm extends React.Component{
         });
         console.log('error')
       }
-    )
+    );
     alert(
       'Data was submitted: ' +
       this.state.value
