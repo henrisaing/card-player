@@ -17,16 +17,30 @@ class Game extends React.Component{
     super(props);
     this.state = {
       decks: Array(10).fill(null),
+      cards: [],
     };
   }
+
+  callbackFunction = (childData) => {
+    let childCards = $.parseHTML(childData.items)[0].innerHTML;
+    let deckCards;
+    let div = document.createElement('div');
+
+    div.innerHTML = childCards;
+    deckCards = [].slice.call(div.getElementsByClassName("card"));
+
+    this.setState({cards: deckCards});
+    console.log(childData.name);
+    console.log(deckCards);
+  };
 
   render(){
     return(
       <div
         className="game">
         Game
-        <DeckForm/>
-        <Board/>
+        <DeckForm parentCallback = {this.callbackFunction}/>
+        <Board cards = {this.state.cards}/>
       </div>
       );
   }
@@ -42,15 +56,20 @@ class Board extends React.Component{
   constructor(props){
     super(props);
     this.state = {
-
+      decks: [],
     };
+    let cardsList = this.props.cards.map((card) => card);
+    console.log(cardsList);
+    console.log(this.props.cards);
   }
 
   render(){
     return(
       <div className="board">
-        Board
         <Card/>
+        {
+          this.props.cards.map((card) => <Card text = {card.outerHTML}/>)
+        }
       </div>
     );
   }
@@ -85,7 +104,7 @@ class DeckForm extends React.Component{
       "Access-Control-Allow-Headers": "Origin, X-Requested-With, Content-Type, Accept, Authorization"
       }
     });
-    let cards = [];
+
     fetch(this.state.value)
     .then(res => res.json())
     .then(
@@ -95,18 +114,19 @@ class DeckForm extends React.Component{
           items: result.cards,
           name: result.name
         });
-        
+        this.props.parentCallback(this.state);
       },
       (error) => {
         this.setState({
-          isLoaded: true,
+          isLoaded: false,
           error
         });
       }
     );
 
-    console.log(this.state);
-    console.log(this.state.name);
+    // console.log(this.state.items);
+    // console.log(this.state.name);
+    
     event.preventDefault();
   }
 
@@ -152,7 +172,7 @@ class Card extends React.Component{
   render(){
     return(
       <div className="card">
-        card
+        {this.props.text}
       </div>
       );
   }
