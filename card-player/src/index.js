@@ -190,8 +190,8 @@ class Card extends React.Component{
     super(props);
     this.state = {
       name: 'abc',
-      positionX: '0px',
-      positionY: '0px',
+      positionX: '50%',
+      positionY: '50%',
       front: this.props.text,
       back: null,
     };
@@ -203,10 +203,12 @@ class Card extends React.Component{
       console.log('mousedown');
     }else if(event.type === "drag"){
       console.log("X: "+event.clientX + "Y: " + event.clientX);
-      this.setState({
+      if(event.clientX !== 0 && event.clientY !== 0){
+        this.setState({
         positionX: event.clientX + "px",
         positionY: event.clientY + "px",
       });
+      }
     }else{
       console.log(event.type);
     }
@@ -222,8 +224,8 @@ class Card extends React.Component{
     return(
       <div className="cardWrap" 
       style={{
-        top: this.state.positionX, 
-        left: this.state.positionY,
+        top: this.state.positionY, 
+        left: this.state.positionX,
         zIndex:'1000'
       }}
       onClick={this.handleClick}
