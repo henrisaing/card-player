@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import './card.css';
 import $ from 'jquery';
+import parse from 'html-react-parser';
 // import App from './App';
 // import reportWebVitals from './reportWebVitals';
 
@@ -66,10 +67,7 @@ class Board extends React.Component{
   render(){
     return(
       <div className="board">
-        <Card/>
-        {
-          this.props.cards.map((card) => <Card text = {card.outerHTML}/>)
-        }
+        <Deck cards = {this.props.cards}/>
       </div>
     );
   }
@@ -96,6 +94,15 @@ class DeckForm extends React.Component{
   }
 
   handleSubmit(event){
+    console.log(this.state.value);
+    let urlCheck = this.state.value.split('/');
+    let url;
+
+    if(urlCheck[urlCheck.length -1] == 'api'){
+      url = this.state.value;
+    }else{
+      url = this.state.value.concat('/api');
+    }
     $.ajaxSetup({
       headers:{
         "Access-Control-Allow-Origin": "*",
@@ -105,7 +112,7 @@ class DeckForm extends React.Component{
       }
     });
 
-    fetch(this.state.value)
+    fetch(url)
     .then(res => res.json())
     .then(
       (result) => {
@@ -150,6 +157,27 @@ class DeckForm extends React.Component{
 
 }
 
+class Deck extends React.Component{
+  constructor(props){
+    super(props);
+    this.state = {
+      name: 'no name',
+      owner: 'player 1',
+      cards: this.props.cards,
+      back: null,
+    }
+  }
+
+  render(){
+    return(
+      <div>
+        {
+          this.props.cards.map((card) => <Card text = {card.outerHTML}/>)
+        }
+      </div>
+    );
+  }
+}
 
 /*
 * Board class, parent.
@@ -162,17 +190,48 @@ class Card extends React.Component{
     super(props);
     this.state = {
       name: 'abc',
-      positionX: 0,
-      positionY: 0,
-      front: null,
+      positionX: '0px',
+      positionY: '0px',
+      front: this.props.text,
       back: null,
     };
   }
 
+  handleEvent = (event) => {
+    console.log(event);
+    if(event.type === "mousedown"){
+      console.log('mousedown');
+    }else if(event.type === "drag"){
+      console.log("X: "+event.clientX + "Y: " + event.clientX);
+      this.setState({
+        positionX: event.clientX + "px",
+        positionY: event.clientY + "px",
+      });
+    }else{
+      console.log(event.type);
+    }
+  }
+  handleClick(){
+    console.log('clicked');
+  }
+  mouseDown(event){
+    console.log(event);
+  }
+
   render(){
     return(
-      <div className="card">
-        {this.props.text}
+      <div className="cardWrap" 
+      style={{
+        top: this.state.positionX, 
+        left: this.state.positionY,
+        zIndex:'1000'
+      }}
+      onClick={this.handleClick}
+      onMouseDown={this.handleEvent}
+      onMouseUp={this.handleEvent}
+      onDrag={this.handleEvent}
+      >
+        {parse(String(this.state.front))}
       </div>
       );
   }

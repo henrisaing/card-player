@@ -14,21 +14,21 @@ code {
 
 .game{
   position: relative;
-  min-height: 90vh;
-  width: 90%;
+  min-height: 100vh;
+  width: 100%;
   /*background-color: blue;*/
   margin-left: auto;
   margin-right: auto;
   border:  2px solid blue;
   color: blue;
+  z-index:  0;
 }
 
-.card{
-  height: 50px;
-  width: 50px;        
-  background-color: white;
-  border:  2px solid black;
-  color: black;
+.cardWrap{
+  transform:  scale(1)!important;
+  transform-origin: left;
+  position: absolute;
+  z-index:  1000;
 }
 
 .board{
