@@ -94,7 +94,7 @@ class DeckForm extends React.Component{
   }
 
   handleSubmit(event){
-    console.log(this.state.value);
+    // console.log(this.state.value);
     let urlCheck = this.state.value.split('/');
     let url;
 
@@ -165,14 +165,26 @@ class Deck extends React.Component{
       owner: 'player 1',
       cards: this.props.cards,
       back: null,
+      clicks: 1,
     }
   }
 
+  addClick = () => {
+    this.setState({clicks: this.state.clicks + 1});
+  }
+
   render(){
+    const deck = this;
     return(
       <div>
         {
-          this.props.cards.map((card) => <Card text = {card.outerHTML}/>)
+          this.props.cards.map((card, index) => 
+            <Card 
+            text = {card.outerHTML} 
+            key = {index}
+            clicks = {this.state.clicks}
+            addClick = {this.addClick}
+            />)
         }
       </div>
     );
@@ -192,32 +204,38 @@ class Card extends React.Component{
       name: 'abc',
       positionX: '50%',
       positionY: '50%',
+      zIndex: '100',
       front: this.props.text,
       back: null,
     };
   }
 
   handleEvent = (event) => {
-    console.log(event);
+    //on click/mousedown
     if(event.type === "mousedown"){
-      console.log('mousedown');
+      this.props.addClick();
+      this.setState({
+        zIndex: 1000 + this.props.clicks,
+      })
+    //on drag
     }else if(event.type === "drag"){
-      console.log("X: "+event.clientX + "Y: " + event.clientX);
+      //while dragging
       if(event.clientX !== 0 && event.clientY !== 0){
         this.setState({
         positionX: event.clientX + "px",
         positionY: event.clientY + "px",
       });
+      //on drag release
+      }else{
+        this.setState({
+        zIndex: 100 + this.props.clicks,
+      });
       }
+    }else if(event.type === "contextmenu"){
+      event.preventDefault();
     }else{
       console.log(event.type);
     }
-  }
-  handleClick(){
-    console.log('clicked');
-  }
-  mouseDown(event){
-    console.log(event);
   }
 
   render(){
@@ -226,12 +244,14 @@ class Card extends React.Component{
       style={{
         top: this.state.positionY, 
         left: this.state.positionX,
-        zIndex:'1000'
+        zIndex: this.state.zIndex,
       }}
       onClick={this.handleClick}
       onMouseDown={this.handleEvent}
       onMouseUp={this.handleEvent}
       onDrag={this.handleEvent}
+      onContextMenu = {this.handleEvent}
+      onDoubleClick = {this.handleEvent}
       >
         {parse(String(this.state.front))}
       </div>

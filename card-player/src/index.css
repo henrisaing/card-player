@@ -25,10 +25,10 @@ code {
 }
 
 .cardWrap{
-  transform: translate(-50%, -50%) scale(1)!important;
-  transform-origin: left;
+  transform: translate(-50%, -50%) scale(0.5)!important;
+  transform-origin: center;
   position: absolute;
-  z-index:  1000;
+  z-index:  100;
 }
 
 .board{
