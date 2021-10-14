@@ -31,8 +31,8 @@ class Game extends React.Component{
     deckCards = [].slice.call(div.getElementsByClassName("card"));
 
     this.setState({cards: deckCards});
-    console.log(childData.name);
-    console.log(deckCards);
+    // console.log(childData.name);
+    // console.log(deckCards);
   };
 
   render(){
@@ -78,6 +78,7 @@ class DeckForm extends React.Component{
     super(props);
     this.state = {
       value: '',
+      back: '',
       error: null,
       isLoaded: false,
       items: [],
@@ -97,6 +98,7 @@ class DeckForm extends React.Component{
     // console.log(this.state.value);
     let urlCheck = this.state.value.split('/');
     let url;
+    let backUrl;
 
     if(urlCheck[urlCheck.length -1] == 'api'){
       url = this.state.value;
@@ -148,6 +150,12 @@ class DeckForm extends React.Component{
               onChange={this.handleChange}
             />
           </label>
+          {/*<label> Back:
+            <input 
+              type="text" 
+              value={this.state.back}
+            />
+          </label>*/}
           <input type="submit" value="Get Deck" />
 
         </form>
@@ -207,6 +215,7 @@ class Card extends React.Component{
       zIndex: '100',
       front: this.props.text,
       back: null,
+      showFront: true,
     };
   }
 
@@ -232,6 +241,11 @@ class Card extends React.Component{
       });
       }
     }else if(event.type === "contextmenu"){
+      console.log('context');
+      console.log(this);
+      this.setState({
+        showFront: this.state.showFront ? false : true
+      });
       event.preventDefault();
     }else{
       console.log(event.type);
@@ -253,7 +267,7 @@ class Card extends React.Component{
       onContextMenu = {this.handleEvent}
       onDoubleClick = {this.handleEvent}
       >
-        {parse(String(this.state.front))}
+        {this.state.showFront ? parse(String(this.state.front)) : parse("<div class='card card-portrait'><div class='card-element card-background card-background-blue'></div></div>")}
       </div>
       );
   }
