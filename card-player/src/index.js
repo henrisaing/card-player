@@ -19,18 +19,32 @@ class Game extends React.Component{
     this.state = {
       decks: Array(10).fill(null),
       cards: [],
+      cardBacks: [],
     };
   }
 
   callbackFunction = (childData) => {
+    console.log(childData);
     let childCards = $.parseHTML(childData.items)[0].innerHTML;
+    let cardBacks = $.parseHTML(childData.cardBack)[0].innerHTML;
+
     let deckCards;
     let div = document.createElement('div');
-
     div.innerHTML = childCards;
     deckCards = [].slice.call(div.getElementsByClassName("card"));
 
-    this.setState({cards: deckCards});
+    // console.log(childData.cardBack);
+    
+    // console.log(cardBack);
+    let cardBack;
+    let cbDiv = document.createElement('div');
+    cbDiv.innerHTML = cardBacks;
+    cardBack = [].slice.call(cbDiv.getElementsByClassName("card"));
+    console.log(cardBack[0]);
+    this.setState({
+      cards: deckCards,
+      cardBacks: cardBack[0],
+    });
     // console.log(childData.name);
     // console.log(deckCards);
   };
@@ -41,7 +55,10 @@ class Game extends React.Component{
         className="game">
         Game
         <DeckForm parentCallback = {this.callbackFunction}/>
-        <Board cards = {this.state.cards}/>
+        <Board 
+        cards = {this.state.cards}
+        backs = {this.state.cardBacks}
+        />
       </div>
       );
   }
@@ -67,7 +84,10 @@ class Board extends React.Component{
   render(){
     return(
       <div className="board">
-        <Deck cards = {this.props.cards}/>
+        <Deck 
+        cards = {this.props.cards}
+        backs = {this.props.backs}
+        />
       </div>
     );
   }
@@ -82,28 +102,45 @@ class DeckForm extends React.Component{
       error: null,
       isLoaded: false,
       items: [],
+      cardBack: [],
     };
 
     this.handleChange = this.handleChange.bind(this);
+    this.handleChangeBack = this.handleChangeBack.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
   handleChange(event){
     this.setState({
-      value: event.target.value
+      value: event.target.value,
+    });
+  }
+
+  handleChangeBack(event){
+    this.setState({
+      back: event.target.value,
     });
   }
 
   handleSubmit(event){
+    event.preventDefault();
     // console.log(this.state.value);
     let urlCheck = this.state.value.split('/');
     let url;
     let backUrl;
-
+    let backUrlCheck = this.state.back.split('/');
+    console.log(this.state.value);
+    console.log(this.state.back);
     if(urlCheck[urlCheck.length -1] == 'api'){
       url = this.state.value;
     }else{
       url = this.state.value.concat('/api');
+    }
+
+    if(backUrlCheck[backUrlCheck.length -1] == 'api'){
+      backUrl = this.state.back;
+    }else{
+      backUrl = this.state.back.concat('/api');
     }
     $.ajaxSetup({
       headers:{
@@ -114,18 +151,44 @@ class DeckForm extends React.Component{
       }
     });
 
+    // loads front, 
+    //then loads back, 
+    //then sends callback
+    //super nasty code REFACTOR LATER
     fetch(url)
     .then(res => res.json())
     .then(
       (result) => {
+        console.log('front setstate');
         this.setState({
           isLoaded: true,
           items: result.cards,
           name: result.name
         });
-        this.props.parentCallback(this.state);
+        // this.props.parentCallback(this.state);
+
+        //gets card back
+        fetch(backUrl)
+        .then(res => res.json())
+        .then(
+          (result) => {
+            console.log('cardback setstate');
+            this.setState({
+              cardBack: result.cards,
+            });
+            this.props.parentCallback(this.state);
+          },
+          (error) => {
+            console.log('backUrl error');
+            this.setState({
+              isLoaded: false,
+              error
+            });
+          }
+        );
       },
       (error) => {
+        console.log('url error');
         this.setState({
           isLoaded: false,
           error
@@ -133,10 +196,29 @@ class DeckForm extends React.Component{
       }
     );
 
+    // fetch(backUrl)
+    // .then(res => res.json())
+    // .then(
+    //   (result) => {
+    //     console.log('cardback setstate');
+    //     this.setState({
+    //       cardBack: result.cards,
+    //     });
+    //     // this.props.parentCallback(this.state);
+    //   },
+    //   (error) => {
+    //     console.log('backUrl error');
+    //     this.setState({
+    //       isLoaded: false,
+    //       error
+    //     });
+    //   }
+    // // );
+    // console.log(this.state);
     // console.log(this.state.items);
     // console.log(this.state.name);
+    // this.props.parentCallback(this.state);
     
-    event.preventDefault();
   }
 
   render(){
@@ -145,17 +227,20 @@ class DeckForm extends React.Component{
         <form onSubmit={this.handleSubmit}>
           <label> Deck:
             <input 
+              name="card"
               type="text" 
               value={this.state.value}
               onChange={this.handleChange}
             />
           </label>
-          {/*<label> Back:
+          <label> Back:
             <input 
+              name="cardBack"
               type="text" 
               value={this.state.back}
+              onChange={this.handleChangeBack}
             />
-          </label>*/}
+          </label>
           <input type="submit" value="Get Deck" />
 
         </form>
@@ -172,13 +257,15 @@ class Deck extends React.Component{
       name: 'no name',
       owner: 'player 1',
       cards: this.props.cards,
-      back: null,
+      back: this.props.backs,
       clicks: 1,
     }
   }
 
   addClick = () => {
     this.setState({clicks: this.state.clicks + 1});
+    console.log(this.props.backs);
+    console.log(this.state.cards);
   }
 
   render(){
@@ -192,6 +279,7 @@ class Deck extends React.Component{
             key = {index}
             clicks = {this.state.clicks}
             addClick = {this.addClick}
+            back = {this.props.backs.outerHTML}
             />)
         }
       </div>
@@ -214,7 +302,7 @@ class Card extends React.Component{
       positionY: '50%',
       zIndex: '100',
       front: this.props.text,
-      back: null,
+      back: this.props.back,
       showFront: true,
     };
   }
@@ -242,7 +330,8 @@ class Card extends React.Component{
       }
     }else if(event.type === "contextmenu"){
       console.log('context');
-      console.log(this);
+      console.log(this.state.back);
+      console.log(this.state.front);
       this.setState({
         showFront: this.state.showFront ? false : true
       });
@@ -267,7 +356,7 @@ class Card extends React.Component{
       onContextMenu = {this.handleEvent}
       onDoubleClick = {this.handleEvent}
       >
-        {this.state.showFront ? parse(String(this.state.front)) : parse("<div class='card card-portrait'><div class='card-element card-background card-background-blue'></div></div>")}
+        {this.state.showFront ? parse(String(this.state.front)) : parse(String(this.state.back))}
       </div>
       );
   }
