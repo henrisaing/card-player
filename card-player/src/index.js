@@ -24,7 +24,6 @@ class Game extends React.Component{
   }
 
   callbackFunction = (childData) => {
-    console.log(childData);
     let childCards = $.parseHTML(childData.items)[0].innerHTML;
     let cardBacks = $.parseHTML(childData.cardBack)[0].innerHTML;
 
@@ -33,20 +32,15 @@ class Game extends React.Component{
     div.innerHTML = childCards;
     deckCards = [].slice.call(div.getElementsByClassName("card"));
 
-    // console.log(childData.cardBack);
-    
-    // console.log(cardBack);
     let cardBack;
     let cbDiv = document.createElement('div');
     cbDiv.innerHTML = cardBacks;
     cardBack = [].slice.call(cbDiv.getElementsByClassName("card"));
-    console.log(cardBack[0]);
+
     this.setState({
       cards: deckCards,
       cardBacks: cardBack[0],
     });
-    // console.log(childData.name);
-    // console.log(deckCards);
   };
 
   render(){
@@ -76,9 +70,7 @@ class Board extends React.Component{
     this.state = {
       decks: [],
     };
-    let cardsList = this.props.cards.map((card) => card);
-    console.log(cardsList);
-    console.log(this.props.cards);
+    // let cardsList = this.props.cards.map((card) => card);
   }
 
   render(){
@@ -195,29 +187,6 @@ class DeckForm extends React.Component{
         });
       }
     );
-
-    // fetch(backUrl)
-    // .then(res => res.json())
-    // .then(
-    //   (result) => {
-    //     console.log('cardback setstate');
-    //     this.setState({
-    //       cardBack: result.cards,
-    //     });
-    //     // this.props.parentCallback(this.state);
-    //   },
-    //   (error) => {
-    //     console.log('backUrl error');
-    //     this.setState({
-    //       isLoaded: false,
-    //       error
-    //     });
-    //   }
-    // // );
-    // console.log(this.state);
-    // console.log(this.state.items);
-    // console.log(this.state.name);
-    // this.props.parentCallback(this.state);
     
   }
 
@@ -264,8 +233,6 @@ class Deck extends React.Component{
 
   addClick = () => {
     this.setState({clicks: this.state.clicks + 1});
-    console.log(this.props.backs);
-    console.log(this.state.cards);
   }
 
   render(){
@@ -329,9 +296,9 @@ class Card extends React.Component{
       });
       }
     }else if(event.type === "contextmenu"){
-      console.log('context');
-      console.log(this.state.back);
-      console.log(this.state.front);
+      // console.log('context');
+      // console.log(this.state.back);
+      // console.log(this.state.front);
       this.setState({
         showFront: this.state.showFront ? false : true
       });
