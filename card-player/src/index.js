@@ -201,7 +201,7 @@ class DeckForm extends React.Component{
               value={this.state.value}
               onChange={this.handleChange}
             />
-          </label>
+          </label> <br/>
           <label> Back:
             <input 
               name="cardBack"
@@ -295,13 +295,11 @@ class Card extends React.Component{
         zIndex: 100 + this.props.clicks,
       });
       }
-    }else if(event.type === "contextmenu"){
-      // console.log('context');
-      // console.log(this.state.back);
-      // console.log(this.state.front);
+    }else if(event.type === "dblclick"){
       this.setState({
         showFront: this.state.showFront ? false : true
       });
+    }else if(event.type === "contextmenu"){
       event.preventDefault();
     }else{
       console.log(event.type);
