@@ -123,13 +123,13 @@ class DeckForm extends React.Component{
     let backUrlCheck = this.state.back.split('/');
     console.log(this.state.value);
     console.log(this.state.back);
-    if(urlCheck[urlCheck.length -1] == 'api'){
+    if(urlCheck[urlCheck.length -1] === 'api'){
       url = this.state.value;
     }else{
       url = this.state.value.concat('/api');
     }
 
-    if(backUrlCheck[backUrlCheck.length -1] == 'api'){
+    if(backUrlCheck[backUrlCheck.length -1] === 'api'){
       backUrl = this.state.back;
     }else{
       backUrl = this.state.back.concat('/api');
@@ -270,17 +270,31 @@ class Card extends React.Component{
       zIndex: '100',
       front: this.props.text,
       back: this.props.back,
-      showFront: true,
+      showFront: false,
+      scale: 0.5,
     };
   }
 
   handleEvent = (event) => {
     //on click/mousedown
+    console.log(event.button)
     if(event.type === "mousedown"){
+      console.log('mousedown:'+this.props.clicks);
       this.props.addClick();
       this.setState({
-        zIndex: 1000 + this.props.clicks,
+        zIndex: 100 + this.props.clicks,
       })
+
+      if(event.button === 1){
+        console.log("middle mouse");
+        console.log(this);
+
+        if(this.state.scale === 0.5){
+          this.setState({scale:1.0});
+        }else{
+          this.setState({scale: 0.5});
+        }
+      }
     //on drag
     }else if(event.type === "drag"){
       //while dragging
@@ -289,12 +303,11 @@ class Card extends React.Component{
         positionX: event.clientX + "px",
         positionY: event.clientY + "px",
       });
-      //on drag release
       }else{
-        this.setState({
-        zIndex: 100 + this.props.clicks,
-      });
+        //on drag release
       }
+    }else if(event.type === "click"){
+      console.log('click event');
     }else if(event.type === "dblclick"){
       this.setState({
         showFront: this.state.showFront ? false : true
@@ -302,7 +315,7 @@ class Card extends React.Component{
     }else if(event.type === "contextmenu"){
       event.preventDefault();
     }else{
-      console.log(event.type);
+      console.log(event.type+":"+this.props.clicks);
     }
   }
 
@@ -313,13 +326,14 @@ class Card extends React.Component{
         top: this.state.positionY, 
         left: this.state.positionX,
         zIndex: this.state.zIndex,
+        transform: 'translate(-50%, -50%) scale('+this.state.scale+')',
       }}
-      onClick={this.handleClick}
       onMouseDown={this.handleEvent}
       onMouseUp={this.handleEvent}
       onDrag={this.handleEvent}
       onContextMenu = {this.handleEvent}
       onDoubleClick = {this.handleEvent}
+      draggable = "false"
       >
         {this.state.showFront ? parse(String(this.state.front)) : parse(String(this.state.back))}
       </div>
