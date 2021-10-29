@@ -17,9 +17,10 @@ class Game extends React.Component{
   constructor(props){
     super(props);
     this.state = {
-      decks: Array(10).fill(null),
+      decks: [],
       cards: [],
       cardBacks: [],
+      counters: [],
     };
   }
 
@@ -43,21 +44,74 @@ class Game extends React.Component{
     });
   };
 
+  addCounter = (event) => {
+    console.log('counter');
+    this.setState({
+      counters: this.state.counters.concat([0])
+    });
+  }
+
   render(){
     return(
       <div
         className="game">
-        Game
+
+        <button onClick={this.addCounter}>Add Counter</button>
         <DeckForm parentCallback = {this.callbackFunction}/>
         <Board 
         cards = {this.state.cards}
         backs = {this.state.cardBacks}
         />
+
+        {
+          this.state.counters.map((counter, index) => 
+            <Counter 
+            value = {counter}
+            key = {index}
+            />)
+        }
       </div>
       );
   }
 }
 
+class Counter extends React.Component{
+  constructor(props){
+    super(props);
+    this.state ={
+      value: this.props.value,
+      positionX: "0%",
+      positionY: "0%",
+    }
+  }
+  render(){
+    return(
+      <div 
+      className="counter" 
+      draggable="true"
+      style={{
+        top: this.state.positionY, 
+        left: this.state.positionX,
+      }}
+      >
+        <div className="button-bar-top">
+          <button>+</button>
+          <button>+</button>
+          <button>+</button>
+          <button>+</button>
+        </div>
+        <span>{this.props.value}</span>
+
+        <div className="button-bar-bottom">
+          <button>-</button>
+          <button>-</button>
+          <button>-</button>
+          <button>-</button>
+        </div>
+      </div>
+    );
+  }
+}
 /*
 * Board class, parent.
 * Holds Card-class children.

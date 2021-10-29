@@ -19,7 +19,7 @@ code {
   /*background-color: blue;*/
   margin-left: auto;
   margin-right: auto;
-  border:  2px solid blue;
+  border:  2px solid black;
   color: blue;
   z-index:  0;
 }
@@ -42,8 +42,43 @@ code {
   z-index: -1;
 }
 
+.counter{
+  position: relative;
+  border:  2px solid black;
+  background-color: rgb(150,150,150);
+  width:  100px;
+  line-height: 50px;
+  height: 50px;
+  text-align: right;
+}
+
+.counter span{
+  display: inline-block;
+  vertical-align:  middle;
+  line-height:  normal;
+}
+
+.counter button{
+  width: 20px;
+}
+
+.button-bar-top{
+  position: absolute;
+  top: -17px;
+  right: 0;
+}
+.button-bar-bottom{
+  position: absolute;
+  bottom: -17px;
+  right: 0;
+}
 
 .deck-form{
   position: absolute;
   bottom: 0%;
+}
+
+label{
+  /*-webkit-text-stroke: 1px white;*/
+  color: black;
 }
