@@ -84,11 +84,38 @@ class Counter extends React.Component{
       positionY: "0%",
     }
   }
+
+  handleEvent = (event) => {
+    //on click/mousedown
+    console.log(event.button)
+    if(event.type === "mousedown"){
+    //on drag
+    }else if(event.type === "drag"){
+      //while dragging
+      if(event.clientX !== 0 && event.clientY !== 0){
+        this.setState({
+        positionX: event.clientX + "px",
+        positionY: event.clientY + "px",
+      });
+      }else{
+        //on drag release
+      }
+    }else if(event.type === "click"){
+      console.log('click event');
+    }else if(event.type === "dblclick"){
+
+    }else if(event.type === "contextmenu"){
+      event.preventDefault();
+    }else{
+    }
+  }
+
   render(){
     return(
       <div 
       className="counter" 
       draggable="true"
+      onDrag={this.handleEvent}
       style={{
         top: this.state.positionY, 
         left: this.state.positionX,
