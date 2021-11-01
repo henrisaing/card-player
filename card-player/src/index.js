@@ -80,33 +80,58 @@ class Counter extends React.Component{
     super(props);
     this.state ={
       value: this.props.value,
-      positionX: "0%",
-      positionY: "0%",
+      positionX: "10%",
+      positionY: "10%",
     }
   }
 
   handleEvent = (event) => {
-    //on click/mousedown
-    console.log(event.button)
-    if(event.type === "mousedown"){
-    //on drag
-    }else if(event.type === "drag"){
+    if(event.type === "drag"){
       //while dragging
       if(event.clientX !== 0 && event.clientY !== 0){
         this.setState({
-        positionX: event.clientX + "px",
-        positionY: event.clientY + "px",
-      });
-      }else{
-        //on drag release
+          positionX: event.clientX + "px",
+          positionY: event.clientY + "px",
+        });
       }
-    }else if(event.type === "click"){
-      console.log('click event');
-    }else if(event.type === "dblclick"){
+    }
+  }
 
-    }else if(event.type === "contextmenu"){
-      event.preventDefault();
-    }else{
+  buttonClick = (event) => {
+    switch(event.target.attributes[0].value){
+      case "1000":
+        this.setState({value: (this.state.value + 1000)});
+        break;
+
+      case "100":
+        this.setState({value: (this.state.value + 100)});
+        break;
+
+      case "10":
+        this.setState({value: (this.state.value + 10)});
+        break;
+
+      case "1":
+        this.setState({value: (this.state.value + 1)});
+        break;
+
+      case "-1000":
+        this.setState({value: (this.state.value - 1000)});
+        break;
+
+      case "-100":
+        this.setState({value: (this.state.value - 100)});
+        break;
+
+      case "-10":
+        this.setState({value: (this.state.value - 10)});
+        break;
+
+      case "-1":
+        this.setState({value: (this.state.value - 1)});
+        break;
+
+      default:
     }
   }
 
@@ -122,18 +147,18 @@ class Counter extends React.Component{
       }}
       >
         <div className="button-bar-top">
-          <button>+</button>
-          <button>+</button>
-          <button>+</button>
-          <button>+</button>
+          <button onClick={this.buttonClick} value="1000">+</button>
+          <button onClick={this.buttonClick} value="100">+</button>
+          <button onClick={this.buttonClick} value="10">+</button>
+          <button onClick={this.buttonClick} value="1">+</button>
         </div>
-        <span>{this.props.value}</span>
+        <span>{this.state.value}</span>
 
         <div className="button-bar-bottom">
-          <button>-</button>
-          <button>-</button>
-          <button>-</button>
-          <button>-</button>
+          <button onClick={this.buttonClick} value="-1000">-</button>
+          <button onClick={this.buttonClick} value="-100">-</button>
+          <button onClick={this.buttonClick} value="-10">-</button>
+          <button onClick={this.buttonClick} value="-1">-</button>
         </div>
       </div>
     );

@@ -43,7 +43,7 @@ code {
 }
 
 .counter{
-  position: relative;
+  position: absolute;
   border:  2px solid black;
   background-color: rgb(150,150,150);
   width:  100px;
