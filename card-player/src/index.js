@@ -97,6 +97,15 @@ class Counter extends React.Component{
     }
   }
 
+  updateCounter = (event) => {
+    console.log(event);
+    this.setState({
+      value: parseInt(event.target.value),
+    });
+  }
+
+  //gets button clicked
+  //add buttons value to this.state.value
   buttonClick = (event) => {
     switch(event.target.attributes[0].value){
       case "1000":
@@ -152,7 +161,7 @@ class Counter extends React.Component{
           <button onClick={this.buttonClick} value="10">+</button>
           <button onClick={this.buttonClick} value="1">+</button>
         </div>
-        <span>{this.state.value}</span>
+        <span><input onChange={this.updateCounter} type="number" value={this.state.value}/></span>
 
         <div className="button-bar-bottom">
           <button onClick={this.buttonClick} value="-1000">-</button>
