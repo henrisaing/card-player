@@ -44,11 +44,27 @@ class Game extends React.Component{
     });
   };
 
-  addCounter = (event) => {
-    console.log('counter');
+  removeCounter = (childData) => {
+    console.log('removeCounterParent');
+    console.log(childData);
+    console.log(this.state.counters);
+    let updateList = this.state.counters;
     this.setState({
-      counters: this.state.counters.concat([0])
+      counters: (updateList.filter(item => item !== childData))
     });
+    //????
+    
+  }
+
+  addCounter = (event) => {
+    console.log('counterBefore:'+this.state.counters);
+    console.log(this.state.counters.length);
+    this.setState({
+      counters: this.state.counters.concat([this.state.counters.length])
+    });
+    console.log('counterAfter:'+this.state.counters);
+    console.log(this.state.counters.length);
+
   }
 
   render(){
@@ -66,8 +82,10 @@ class Game extends React.Component{
         {
           this.state.counters.map((counter, index) => 
             <Counter 
-            value = {counter}
-            key = {index}
+            value = {0}
+            key = {counter}
+            id = {counter}
+            parentCallback = {this.removeCounter}
             />)
         }
       </div>
@@ -85,6 +103,7 @@ class Counter extends React.Component{
     }
   }
 
+  // drag handler
   handleEvent = (event) => {
     if(event.type === "drag"){
       //while dragging
@@ -97,8 +116,12 @@ class Counter extends React.Component{
     }
   }
 
+  removeButton = (event) => {
+    this.props.parentCallback(this.props.id);
+  }
+
+  // user manually inputing number
   updateCounter = (event) => {
-    console.log(event);
     this.setState({
       value: parseInt(event.target.value),
     });
@@ -147,6 +170,7 @@ class Counter extends React.Component{
   render(){
     return(
       <div 
+      counternumber = {this.props.id}
       className="counter" 
       draggable="true"
       onDrag={this.handleEvent}
@@ -164,6 +188,7 @@ class Counter extends React.Component{
         <span><input onChange={this.updateCounter} type="number" value={this.state.value}/></span>
 
         <div className="button-bar-bottom">
+        <button onClick={this.removeButton}>X</button>
           <button onClick={this.buttonClick} value="-1000">-</button>
           <button onClick={this.buttonClick} value="-100">-</button>
           <button onClick={this.buttonClick} value="-10">-</button>
