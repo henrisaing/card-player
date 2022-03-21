@@ -52,7 +52,6 @@ class Game extends React.Component{
     this.setState({
       counters: (updateList.filter(item => item !== childData))
     });
-    //????
     
   }
 
@@ -130,41 +129,7 @@ class Counter extends React.Component{
   //gets button clicked
   //add buttons value to this.state.value
   buttonClick = (event) => {
-    switch(event.target.attributes[0].value){
-      case "1000":
-        this.setState({value: (this.state.value + 1000)});
-        break;
-
-      case "100":
-        this.setState({value: (this.state.value + 100)});
-        break;
-
-      case "10":
-        this.setState({value: (this.state.value + 10)});
-        break;
-
-      case "1":
-        this.setState({value: (this.state.value + 1)});
-        break;
-
-      case "-1000":
-        this.setState({value: (this.state.value - 1000)});
-        break;
-
-      case "-100":
-        this.setState({value: (this.state.value - 100)});
-        break;
-
-      case "-10":
-        this.setState({value: (this.state.value - 10)});
-        break;
-
-      case "-1":
-        this.setState({value: (this.state.value - 1)});
-        break;
-
-      default:
-    }
+    this.setState({value: (this.state.value + parseInt(event.target.attributes[0].value))})
   }
 
   render(){
